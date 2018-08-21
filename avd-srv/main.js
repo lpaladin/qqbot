@@ -18,12 +18,17 @@ s.post("/login", (req, res, next) => {
     res.end("Command acquired!");
     const cmd = `"${adbPath}" shell am start -n com.tencent.mobileqq/com.tencent.biz.qrcode.activity.QRLoginActivity ` +
         "--activity-no-user-action --es QR_CODE_STRING " + qrContent;
-    c.exec(cmd, (e, out, err) => {
-        console.log(e, out, err);
-        setTimeout(() => {
-            c.exec(`"${adbPath}" shell input tap 516 495`);
-        }, 5000);
-    });
+    console.log(cmd);
+    function retry() {
+        c.exec(cmd, (e, out, err) => {
+            if (!out)
+                return setTimeout(retry, 1000);
+            console.log(e, out, err);
+            setTimeout(() => {
+                c.exec(`"${adbPath}" shell input tap 516 495`);
+            }, 5000);
+        });
+    }
 });
 
 s.listen(listenPort, listenAddr, () => {

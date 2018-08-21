@@ -28,6 +28,9 @@ sampleConfStr = '''
         
         # 二维码 http 服务器端口号
         "httpServerPort" : 8189,
+
+        # 安卓模拟器服务器的 POST 地址（包含端口和路径）
+        "avdServerURL" : "http://localhost:23333/login",
         
         # 自动登录的 QQ 号
         "qq" : "3497303033",
@@ -123,8 +126,8 @@ else:
 usage = '''\
 QQBot 机器人
 
-用法: {PROGNAME} [-h] [-d] [-nd] [-u USER] [-q QQ]
-          [-p TERMSERVERPORT] [-ip HTTPSERVERIP][-hp HTTPSERVERPORT]
+用法: {PROGNAME} [-h] [-d] [-nd] [-u USER] [-q QQ] [-avd AVDSERVERURL]
+          [-p TERMSERVERPORT] [-ip HTTPSERVERIP] [-hp HTTPSERVERPORT]
           [-m MAILACCOUNT] [-mc MAILAUTHCODE] [-r] [-nr]
           [-fi FETCHINTERVAL]
 
@@ -151,6 +154,8 @@ QQBot 机器人
     -q QQ, --qq QQ          指定本次启动时使用的QQ号。
                             如果指定的QQ号的自动登陆信息存在，那么将会使用自动
                               登陆信息进行快速登陆。
+    -avd AVDSERVERURL --avdServerURL AVDSERVERURL
+                            指定需要扫码时请求安卓模拟器服务器扫码的 POST 地址。
 
   QTerm本地控制台服务:
     -p TERMSERVERPORT, --termServerPort TERMSERVERPORT
@@ -224,6 +229,8 @@ class QConf(object):
         parser.add_argument('-b', '--bench')
 
         parser.add_argument('-p', '--termServerPort', type=int)
+
+        parser.add_argument('-avd', '--avdServerURL')                 
 
         parser.add_argument('-ip', '--httpServerIP')                            
 
@@ -424,6 +431,7 @@ class QConf(object):
         INFO('用户名：%s', self.user or '无')
         INFO('登录方式：%s', self.qq and ('自动（qq=%s）' % self.qq) or '手动')        
         INFO('命令行服务器端口号：%s', self.termServerPort or '无')
+        INFO('安卓模拟器服务器 URL：%s', self.avdServerURL or '无')
         INFO('二维码服务器 ip ：%s', self.httpServerIP or '无')
         INFO('二维码服务器端口号：%s',
              self.httpServerIP and self.httpServerPort or '无')

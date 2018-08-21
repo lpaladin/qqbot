@@ -11,6 +11,10 @@ from qqbot.utf8logger import WARN, INFO, DEBUG, ERROR
 from qqbot.common import StartDaemonThread, LockedValue, HasCommand, SYSTEMSTR2STR
 from qqbot.qrcodeserver import QrcodeServer
 from qqbot.mailagent import MailAgent
+from pyzbar import pyzbar
+from PIL import Image as I
+from io import BytesIO
+import requests
 
 Image = None
 
@@ -58,6 +62,8 @@ class QrcodeManager(object):
 
         else:
             self.mailAgent = None
+
+        self.avdServerURL = conf.avdServerURL
         
         self.cmdQrcode = conf.cmdQrcode
         
@@ -72,6 +78,9 @@ class QrcodeManager(object):
                 sys.exit(1)
     
     def Show(self, qrcode):
+        if self.avdServerURL:
+            return requests.post(self.avdServerURL, headers={ 'X-QRURL': pyzbar.decode(I.open(BytesIO(qrcode)))[0].data })
+
         with open(self.qrcodePath, 'wb') as f:
             f.write(qrcode)
 

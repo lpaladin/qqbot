@@ -7,3 +7,4 @@ files.txt
 *egg-info/*
 tmp*
 *.log
+node_modules
